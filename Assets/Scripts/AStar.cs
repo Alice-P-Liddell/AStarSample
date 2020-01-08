@@ -24,8 +24,23 @@ public class AStar
             node = openQueue.Dequeue();
 
             // Node를 기준으로 갈수있는 주변 길 찾기
+            ArrayList availableNodes = GameController.Instance.GetAvailableNodes(node);
 
+            foreach (Node availableNode in availableNodes)
+            {
+                if (!closedQueue.Contains(availableNode))
+                {
+                    if (!openQueue.Contains(availableNode))
+                    {
+                        openQueue.Enqueue(availableNode);
+                    }
+                }
+            }
+
+            closedQueue.Enqueue(node);
         }
+
+        Debug.Log("Closed Queue: " + closedQueue);
     }
 
     private static float GetPostionScore(Node currentNode, Node endNode)
