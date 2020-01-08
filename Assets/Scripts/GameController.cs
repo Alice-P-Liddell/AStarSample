@@ -9,6 +9,9 @@ public class GameController : MonoBehaviour
     public int numOfRows;
     public int numOfColumns;
 
+    // 길 찾기 결과
+    private ArrayList pathList;
+
     // 장애물
     private GameObject[] obstacles;
 
@@ -63,7 +66,10 @@ public class GameController : MonoBehaviour
 
         Node endNode = nodes[nodeRowIndex, nodeColumnIndex];
 
-        AStar.FindPath(startNode, endNode);
+        // 길 찾기
+        pathList = AStar.FindPath(startNode, endNode);
+
+        Debug.Log(pathList);
     }
 
     private void InitNodes()
@@ -78,7 +84,7 @@ public class GameController : MonoBehaviour
             for (int j = 0; j < numOfColumns; j++)
             {
                 Vector3 nodePosition = GetNodePosition(index);
-                Node node = new Node(nodePosition);
+                Node node = new Node(nodePosition, index);
                 nodes[i, j] = node;
                 index++;
             }
@@ -216,5 +222,22 @@ public class GameController : MonoBehaviour
     {
         int columnIndex = nodeIndex % numOfColumns;
         return columnIndex;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (pathList != null && pathList.Count > 0)
+        {
+            int index = 1;
+            foreach (Node node in pathList)
+            {
+                if (index < pathList.Count)
+                {
+                    Node nextNode = (Node)pathList[index];
+                    Debug.DrawLine(node.position, nextNode.position, Color.red);
+                    index++;
+                }
+            }
+        }
     }
 }
